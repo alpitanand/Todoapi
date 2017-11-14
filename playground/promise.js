@@ -11,6 +11,8 @@ var asyncAdd = (a, b) => {
     })
 };
 
-asyncAdd(5,7).then((c)=>{
+asyncAdd(5,'c').then((c)=>{
     console.log(c);
+}).catch((e)=>{
+    console.log(e);
 })
