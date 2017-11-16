@@ -10,7 +10,7 @@ var {ObjectID} = require('mongodb');
 var app = express();
 app.use(bodyParser.json());
 
-
+const port = process.env.PORT || 3000;
 
 app.post('/todos',(req,res)=>{
     var todo = new Todo({
@@ -38,7 +38,8 @@ app.get('/todos/:id',(req,res)=>{
     var val = ObjectID.isValid(id);
     if(val){
        Todo.findById(id).then((doc)=>{
-           res.send({doc})
+           res.send({
+               todo :doc})
        }).catch((e)=>{
            console.log(e);
        })
@@ -54,8 +55,8 @@ app.get('/todos/:id',(req,res)=>{
     
 })
 
-app.listen(3000, ()=>{
-    console.log("Server is up");
+app.listen(port, ()=>{
+    console.log("Server is up "+port);
 });
 
 module.exports = {app:app};
