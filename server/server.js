@@ -51,8 +51,22 @@ app.get('/todos/:id',(req,res)=>{
     }
     //Validate id using mongoose id
         //404 - send back empty id
-
-    
+})
+app.delete('/todos/:id',(req,res)=>{
+    var id = req.params.id;
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+   Todo.findByIdAndRemove(id).then((todo)=>{
+       if(!todo){
+          return res.status(404).send(todo);
+       }
+       else{
+           res.status(200).send(todo);
+       }
+   }).catch((e)=>{
+       res.status(404).send();
+   })
 })
 
 app.listen(port, ()=>{
