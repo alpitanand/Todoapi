@@ -52,6 +52,8 @@ app.get('/todos/:id',(req,res)=>{
     //Validate id using mongoose id
         //404 - send back empty id
 })
+
+//Added deletion
 app.delete('/todos/:id',(req,res)=>{
     var id = req.params.id;
     if(!ObjectID.isValid(id)){
