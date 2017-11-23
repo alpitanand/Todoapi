@@ -15,7 +15,9 @@ const todo = [{
     text: 'First item in the array'
 }, {
     _id: new ObjectID(),
-    text: 'Second item in the array'
+    text: 'Second item in the array',
+    completed: true,
+    completedAt: 333
 }];
 
 beforeEach((done) => {
@@ -124,25 +126,49 @@ describe('Delete /todo/:id', () => {
             .delete(`/todos/${todo[0]._id.toHexString()}`)
             .expect(200)
             .expect((res) => {
-
-
                 expect(res.body.todo.text).toBe(todo[0].text);
             })
-            .end((res, err) => {
+            .end((err, res) => {
                 if (err) {
-                    return done(err);
+                    return done();
                 }
-
             })
         Todo.findById(id).then((todo) => {
-
-
             expect(todo.body).toBe(undefined);
-
-
         }).catch((e) => {
             console.log(e);
         })
         done();
     })
+})
+
+describe('PATCH /todos/:id', () => {
+    it('Should set completed to false', (done) => {
+        request(app)
+            .patch(`/todos/${todo[1]._id.toHexString()}`)
+            .send({
+                "completed": false
+            })
+            .expect(200)
+            .expect((res) => {
+
+                expect(res.body.completed).toBe(false);
+            })
+            .end(done)
+    })
+
+    it('Should set completed to true', (done) => {
+        request(app)
+            .patch(`/todos/${todo[1]._id.toHexString()}`)
+            .send({
+                "completed": true
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.completed).toBe(true);
+            })
+            .end(done)
+    })
+
+
 })
