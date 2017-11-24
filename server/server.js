@@ -1,6 +1,6 @@
 //cd  D:\Projects\web-development\Node.js\Todoapi\server
 
-require('./config/config.js');
+require('../config/config');
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('lodash');
@@ -28,6 +28,18 @@ app.post('/todos', (req, res) => {
     todo.save().then((doc) => {
         res.status(200).send(doc);
     }, (e) => {
+        res.status(400).send(e);
+    })
+})
+
+app.post('/users',(req,res)=>{
+    var user = new User({
+        email : req.body.email,
+        password : req.body.password
+    })
+    user.save().then((doc)=>{
+        res.status(200).send(doc);
+    },(e)=>{
         res.status(400).send(e);
     })
 })
