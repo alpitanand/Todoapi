@@ -1,6 +1,11 @@
 const expect = require('expect');
 const request = require('supertest');
-const {todo,populateTodos,user,populateUsers} = require('./seed/seed');
+const {
+    todo,
+    populateTodos,
+    user,
+    populateUsers
+} = require('./seed/seed');
 const {
     ObjectID
 } = require('mongodb');
@@ -154,4 +159,64 @@ describe('PATCH /todos/:id', () => {
     })
 
 
+})
+
+describe('GET User/me', () => {
+    it('Should be able to return user if authenticated', (done) => {
+        request(app)
+            .get('/users/me')
+            .set('x-auth', user[0].token[0].token)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body._id).toBe(user[0]._id.toHexString());
+                expect(res.body.email).toBe(user[0].email);
+            })
+            .end(done);
+    });
+
+    it('Should return a 401 if not auth', (done) => {
+        request(app)
+            .get('/users/me')
+            .expect(401)
+            .expect((res) => {
+                expect(res.body).toEqual({});
+            })
+            .end(done)
+
+    })
+})
+
+
+describe('POST /users', () => {
+    it('should create a new user', (done) => {
+        var email = 'example@example.com';
+        var password = '123mnb';
+        request(app)
+            .post('/users')
+            .send({
+                email,
+                password
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toExist();
+                expect(res.body._id).toExist();
+                expect(res.body.email).toBe(email);
+            })
+            .end(done)
+    })
+    it('should return validation errro', (done) => {
+        var email = 'exampleexample.com';
+        var password = '123b';
+        request(app)
+            .post('/users')
+            .send({
+                email,
+                password
+            })
+            .expect(400)
+
+            .end(done)
+    })
+    
 })

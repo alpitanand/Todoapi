@@ -130,6 +130,15 @@ app.patch('/todos/:id', (req, res) => {
     })
 })
 
+app.post('/users/login', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+    User.findByCredentials(body.email, body.password).then((user) => {
+        res.header('x-auth', user.generateAuthToken()).send(user);
+    }).catch((e) => {
+        res.status(400).send();
+    })
+})
+
 app.listen(port, () => {
     console.log("Server is up " + port);
 });
