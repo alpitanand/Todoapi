@@ -95,6 +95,17 @@ UserSchema.statics.findByToken = function (token) {
     })
 }
 
+UserSchema.methods.removeToken = function(token){
+    var user = this;
+  return user.update({
+        $pull:{
+            token:{
+                token:token
+            }
+        }
+    })
+}
+
 UserSchema.pre('save', function (next) {
     var user = this;
     if (user.isModified('password')) {

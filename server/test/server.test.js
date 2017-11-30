@@ -218,5 +218,29 @@ describe('POST /users', () => {
 
             .end(done)
     })
-    
+
+})
+
+describe('POST/users/login', (done) => {
+    it('Should generate a new auth token', (done) => {
+        request(app)
+            .post('/users/login')
+            .send({
+                email: user[0].email,
+                password: user[0].password
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.headers['x-auth']).toExist();
+
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                } else {
+                    return done();
+                }
+
+            });
+    })
 })
