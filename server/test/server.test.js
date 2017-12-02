@@ -25,6 +25,7 @@ describe('POST/ todos', () => {
         var text = "Test todo text";
         request(app)
             .post('/todos')
+            .set('x-auth', user[0].token[0].token)
             .send({
                 text
             })
@@ -49,6 +50,7 @@ describe('POST/ todos', () => {
     it('Should not create a new file', (done) => {
         request(app)
             .post('/todos')
+            .set('x-auth', user[0].token[0].token)
             .send({})
             .expect(400)
             .end((err, res) => {
@@ -69,9 +71,10 @@ describe('GET /todos', () => {
     it('Should fetch todos', (done) => {
         request(app)
             .get('/todos')
+            .set('x-auth', user[0].token[0].token)
             .expect(200)
             .expect((res) => {
-                expect(res.body.todos.length).toBe(2);
+                expect(res.body.todos.length).toBe(1);
 
             })
             .end((err, res) => {

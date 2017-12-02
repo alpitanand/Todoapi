@@ -1,4 +1,4 @@
-//cd  D:\Projects\web-development\Node.js\Todoapi\server
+//cd D:\Projects\web-development\Node.js\Todoapi\server
 
 require('../config/config');
 var express = require('express');
@@ -24,9 +24,10 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT;
 
-app.post('/todos', (req, res) => {
+app.post('/todos', authenticate,(req, res) => {
     var todo = new Todo({
-        text: req.body.text
+        text: req.body.text,
+        _creator : req.user._id
     })
     todo.save().then((doc) => {
         res.status(200).send(doc);
@@ -53,8 +54,10 @@ app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);
 })
 
-app.get('/todos', (req, res) => {
-    Todo.find().then((todos) => {
+app.get('/todos', authenticate,(req, res) => {
+    Todo.find({
+        _creator:req.user._id
+    }).then((todos) => {
         res.status(200).send({
             todos
         })
@@ -63,11 +66,14 @@ app.get('/todos', (req, res) => {
     })
 })
 
-app.get('/todos/:id', (req, res) => {
+app.get('/todos/:id', authenticate ,(req, res) => {
     var id = req.params.id;
     var val = ObjectID.isValid(id);
     if (val) {
-        Todo.findById(id).then((doc) => {
+        Todo.findOne({
+            id,
+            _creator:req.user._id
+        }).then((doc) => {
             res.send({
                 todo: doc
             })
